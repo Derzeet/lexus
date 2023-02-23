@@ -13,19 +13,6 @@ import (
 var CreateGun = func(w http.ResponseWriter, r *http.Request) {
 
 	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
-	userProps := r.Context().Value("user")
-
-	account, ok := userProps.(models.Account)
-	if !ok {
-		// Handle the case where userProps is not of type Account
-	}
-
-	isSeller := account.Seller
-
-	if !isSeller {
-		u.Respond(w, u.Message(false, "You are not seller"))
-		return
-	}
 
 	gun := &models.Gun{}
 

@@ -18,7 +18,8 @@ func main() {
 	router.HandleFunc("/login", controllers.Authenticate).Methods("POST")
 	router.HandleFunc("/gun", controllers.CreateGun).Methods("POST")
 	router.HandleFunc("/profile", controllers.GetGunsFor).Methods("GET")
-
+	router.HandleFunc("/order", controllers.CreateOrder).Methods("POST")
+	router.HandleFunc("/order/{gun_id}", controllers.CreateOrder).Methods("POST")
 	router.HandleFunc("/guns/{id:[0-9]+}", controllers.EditGunMethod).Methods("PUT")
 
 	router.Use(app.JwtAuthentication) //attach JWT auth middleware

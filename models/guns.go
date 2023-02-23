@@ -52,14 +52,14 @@ func (gun *Gun) Create() map[string]interface{} {
 	return resp
 }
 
-func GetGun(id uint) *Gun {
+func GetGun(id uint) (*Gun, error) {
 
 	gun := &Gun{}
 	err := GetDB().Table("guns").Where("id = ?", id).First(gun).Error
 	if err != nil {
-		return nil
+		return nil, nil
 	}
-	return gun
+	return gun, nil
 }
 
 func GetUserGuns(user uint) []*Gun {
