@@ -2,21 +2,24 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"go-contacts/app"
 	"go-contacts/controllers"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
-	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
-	router.HandleFunc("/api/contacts/new", controllers.CreateGun).Methods("POST")
-	router.HandleFunc("/api/me/contacts", controllers.GetGunsFor).Methods("GET") //  user/2/contacts
+	router.HandleFunc("/register", controllers.CreateAccount).Methods("POST")
+	router.HandleFunc("/login", controllers.Authenticate).Methods("POST")
+	router.HandleFunc("/gun", controllers.CreateGun).Methods("POST")
+	router.HandleFunc("/profile", controllers.GetGunsFor).Methods("GET")
+
+	router.HandleFunc("/guns/{id:[0-9]+}", controllers.EditGunMethod).Methods("PUT")
 
 	router.Use(app.JwtAuthentication) //attach JWT auth middleware
 

@@ -62,14 +62,28 @@ func GetGun(id uint) *Gun {
 	return gun
 }
 
-func GetGuns(user uint) []*Gun {
-
+func GetUserGuns(user uint) []*Gun {
 	gun := make([]*Gun, 0)
-	err := GetDB().Table("contacts").Where("user_id = ?", user).Find(&gun).Error
+	err := GetDB().Table("guns").Where("user_id = ?", user).Find(&gun).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
-
 	return gun
+}
+
+func EditGun(gunID uint, updates Gun) error {
+	// Retrieve the gun record from the database
+	var gun Gun
+	result := GetDB().First(&gun, gunID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Update the gun record with the provided updates
+	result = db.Model(&gun).Updates(updates)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
