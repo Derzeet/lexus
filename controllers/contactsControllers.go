@@ -11,6 +11,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var GetGunsFor = func(w http.ResponseWriter, r *http.Request) {
+	id := r.Context().Value("user").(uint)
+	data := models.GetUserGuns(id)
+	resp := u.Message(true, "success")
+	resp["data"] = data
+	u.Respond(w, resp)
+}
 var CreateGun = func(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
 
@@ -27,26 +34,27 @@ var CreateGun = func(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-// var CreateGun = func(c *gin.Context) {
-// 	user := c.MustGet("user").(uint) // Grab the id of the user that sent the request
+var DeleteGunByID = func(w http.ResponseWriter, r *http.Request) {
+	// Get the gun ID from the request URL parameters
+	gunID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		// Handle the case where the ID parameter is not valid
+		resp := u.Message(false, "Invalid gun ID")
+		u.Respond(w, resp)
+		return
+	}
 
-// 	gun := &models.Gun{}
+	// Delete the gun record from the database
+	err = models.DeleteGun(uint(gunID))
+	if err != nil {
+		// Handle the case where there was an error deleting the gun record
+		resp := u.Message(false, "Error deleting gun record")
+		u.Respond(w, resp)
+		return
+	}
 
-// 	if err := c.BindJSON(gun); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Error while decoding request body"})
-// 		return
-// 	}
-
-// 	gun.UserId = user
-// 	resp := gun.Create(c)
-// 	c.JSON(http.StatusOK, resp)
-// }
-
-var GetGunsFor = func(w http.ResponseWriter, r *http.Request) {
-	id := r.Context().Value("user").(uint)
-	data := models.GetUserGuns(id)
-	resp := u.Message(true, "success")
-	resp["data"] = data
+	// If the gun record was successfully deleted, return a success response
+	resp := u.Message(true, "Gun record deleted successfully")
 	u.Respond(w, resp)
 }
 

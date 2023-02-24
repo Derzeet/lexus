@@ -61,6 +61,21 @@ func GetGun(id uint) (*Gun, error) {
 	}
 	return gun, nil
 }
+func DeleteGun(id uint) error {
+	// Retrieve the gun record from the database
+	var gun Gun
+	result := GetDB().First(&gun, id)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	// Delete the gun record
+	result = GetDB().Delete(&gun)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
 
 func GetUserGuns(user uint) []*Gun {
 	gun := make([]*Gun, 0)
