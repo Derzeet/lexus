@@ -24,13 +24,10 @@ func main() {
 	router.HandleFunc("/login", controllers.Authenticate).Methods("POST")
 	router.HandleFunc("/gun", controllers.CreateGun).Methods("POST")
 	router.HandleFunc("/profile", controllers.GetGunsFor).Methods("GET")
-<<<<<<< HEAD
 
 	router.HandleFunc("/user/{id}", controllers.GetUserInfo).Methods("GET")
-=======
 	router.HandleFunc("/profile/order", controllers.GetOrderFor).Methods("GET")
 
->>>>>>> 2bf3e8b96538e713807a57838d290088b22d5094
 	router.HandleFunc("/order", controllers.CreateOrder).Methods("POST")
 	router.HandleFunc("/order/{gun_id}", controllers.CreateOrder).Methods("POST")
 	router.HandleFunc("/guns/edit/{id:[0-9]+}", controllers.EditGunMethod).Methods("PUT")
