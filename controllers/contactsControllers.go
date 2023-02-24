@@ -26,7 +26,29 @@ var CreateGun = func(w http.ResponseWriter, r *http.Request) {
 	resp := gun.Create()
 	u.Respond(w, resp)
 }
+var DeleteGunByID = func(w http.ResponseWriter, r *http.Request) {
+	// Get the gun ID from the request URL parameters
+	gunID, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		// Handle the case where the ID parameter is not valid
+		resp := u.Message(false, "Invalid gun ID")
+		u.Respond(w, resp)
+		return
+	}
 
+	// Delete the gun record from the database
+	err = models.DeleteGun(uint(gunID))
+	if err != nil {
+		// Handle the case where there was an error deleting the gun record
+		resp := u.Message(false, "Error deleting gun record")
+		u.Respond(w, resp)
+		return
+	}
+
+	// If the gun record was successfully deleted, return a success response
+	resp := u.Message(true, "Gun record deleted successfully")
+	u.Respond(w, resp)
+}
 var GetGunsFor = func(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("user").(uint)
 	data := models.GetUserGuns(id)
