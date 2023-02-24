@@ -16,6 +16,7 @@ type Gun struct {
 	Availability bool   `json:"availability"`
 	Type         string `json:"type"`
 	UserId       uint   `json:"user_id"` //The user that this contact belongs to
+	// Picture      []byte `json:"-"`
 }
 
 func (gun *Gun) Validate() (map[string]interface{}, bool) {
@@ -86,4 +87,17 @@ func EditGun(gunID uint, updates Gun) error {
 		return result.Error
 	}
 	return nil
+}
+
+func GetAllGuns() ([]Gun, error) {
+	// Define a slice of Gun to hold the retrieved guns data
+	var guns []Gun
+
+	// Retrieve all guns from the database and store them in the guns slice
+	result := GetDB().Find(&guns)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return guns, nil
 }

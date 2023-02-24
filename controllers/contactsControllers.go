@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"go-contacts/models"
+	"go-contacts/utils"
 	u "go-contacts/utils"
 	"net/http"
 	"strconv"
@@ -11,21 +12,7 @@ import (
 )
 
 var CreateGun = func(w http.ResponseWriter, r *http.Request) {
-
 	user := r.Context().Value("user").(uint) //Grab the id of the user that send the request
-	userProps := r.Context().Value("user")
-
-	account, ok := userProps.(models.Account)
-	if !ok {
-		// Handle the case where userProps is not of type Account
-	}
-
-	isSeller := account.Seller
-
-	if !isSeller {
-		u.Respond(w, u.Message(false, "You are not seller"))
-		return
-	}
 
 	gun := &models.Gun{}
 
@@ -39,6 +26,21 @@ var CreateGun = func(w http.ResponseWriter, r *http.Request) {
 	resp := gun.Create()
 	u.Respond(w, resp)
 }
+
+// var CreateGun = func(c *gin.Context) {
+// 	user := c.MustGet("user").(uint) // Grab the id of the user that sent the request
+
+// 	gun := &models.Gun{}
+
+// 	if err := c.BindJSON(gun); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "Error while decoding request body"})
+// 		return
+// 	}
+
+// 	gun.UserId = user
+// 	resp := gun.Create(c)
+// 	c.JSON(http.StatusOK, resp)
+// }
 
 var GetGunsFor = func(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("user").(uint)
@@ -80,4 +82,25 @@ var EditGunMethod = func(w http.ResponseWriter, r *http.Request) {
 	// If the gun record was successfully updated, return a success response
 	resp := u.Message(true, "Gun record updated successfully")
 	u.Respond(w, resp)
+}
+
+var ListStore = func(w http.ResponseWriter, r *http.Request) {
+	// Get all guns from the database using the models.GetAllGuns function
+	guns, err := models.GetAllGuns()
+	if err != nil {
+		// Handle the error if it occurred
+		resp := utils.Message(false, "failed to retrieve guns")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
+	// Create a response object with the guns data and a success message
+	resp := utils.Message(true, "success")
+	resp["data"] = guns
+
+	// Convert the response object to JSON format and write it to the response writer
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
 }
