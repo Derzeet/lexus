@@ -16,7 +16,6 @@ type Gun struct {
 	Availability bool   `json:"availability"`
 	Type         string `json:"type"`
 	UserId       uint   `json:"user_id"` //The user that this contact belongs to
-	// Picture      []byte `json:"-"`
 }
 
 func (gun *Gun) Validate() (map[string]interface{}, bool) {
@@ -53,14 +52,14 @@ func (gun *Gun) Create() map[string]interface{} {
 	return resp
 }
 
-func GetGun(id uint) *Gun {
+func GetGun(id uint) (*Gun, error) {
 
 	gun := &Gun{}
 	err := GetDB().Table("guns").Where("id = ?", id).First(gun).Error
 	if err != nil {
-		return nil
+		return nil, nil
 	}
-	return gun
+	return gun, nil
 }
 
 func GetUserGuns(user uint) []*Gun {
